@@ -1,11 +1,7 @@
-# This is an example PKGBUILD file. Use this as a start to creating your own,
-# and remove these comments. For more information, see 'man PKGBUILD'.
-# NOTE: Please fill out the license field for your package! If it is unknown,
-# then please put 'unknown'.
-
 # Maintainer: bobosito <bobosito000@gmail.com>
+
 pkgname=qgroundcontrol-git
-pkgver=v4.2.0.r37.1d0917c44
+pkgver=v4.2.0.r44.12d286fb7
 pkgrel=1
 epoch=
 # extract_name=wjakob-tbb-9e219e2
@@ -25,8 +21,9 @@ backup=()
 options=()
 install=
 changelog=
-source=("qgroundcontrol::git+https://github.com/mavlink/qgroundcontrol.git#branch=master")
-sha256sums=('SKIP')
+source=("qgroundcontrol::git+https://github.com/mavlink/qgroundcontrol.git#branch=master" "patch")
+sha256sums=('SKIP'
+            'c273c7c044f6e5fdbe4edb3f5459621330eb0cdbbdabc109e531c36a347624dd')
 # noextract=("v2020.3.tar.gz")
 md5sums=()
 validpgpkeys=()
