@@ -1,3 +1,13 @@
-qgroundcontrol*
+android_openssl
+c_library_v2
+eigen
+GpsDrivers
+gst-plugins-good
+libevents
+nlohmann_json_cmake_fetchcontent
 pkg
-src/qgroundcontrol
+PKGBUILD
+qgroundcontrol*
+qmdnsengine
+src
+xz-embedded

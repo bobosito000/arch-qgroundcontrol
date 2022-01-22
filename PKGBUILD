@@ -1,7 +1,7 @@
 # Maintainer: bobosito <bobosito000@gmail.com>
 
 pkgname=qgroundcontrol-git
-pkgver=v4.2.0.r44.12d286fb7
+pkgver=v4.2.0.r47.96401ec30
 pkgrel=1
 epoch=
 # extract_name=wjakob-tbb-9e219e2
@@ -21,26 +21,92 @@ backup=()
 options=()
 install=
 changelog=
-source=("qgroundcontrol::git+https://github.com/mavlink/qgroundcontrol.git#branch=master" "patch")
-sha256sums=('SKIP'
-            'c273c7c044f6e5fdbe4edb3f5459621330eb0cdbbdabc109e531c36a347624dd')
+source=(
+	"git://github.com/mavlink/qgroundcontrol.git"
+	"git://github.com/PX4/GpsDrivers.git"
+	"git://github.com/mavlink/c_library_v2.git"
+	"git://github.com/Auterion/android_openssl.git"
+	"git://github.com/mavlink/gst-plugins-good.git"
+	"git://github.com/Auterion/xz-embedded.git"
+	"git://github.com/mavlink/libevents.git"
+	# "git://gitlab.com/libeigen/eigen.git"
+	"eigen::git+https://gitlab.com/libeigen/eigen.git"
+	"git://github.com/patrickelectric/qmdnsengine.git"
+
+	"git://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent.git"
+
+	# "gst-plugins-good-volatile.patch"::"https://patch-diff.githubusercontent.com/raw/mavlink/gst-plugins-good/pull/1.patch"
+)
+sha256sums=(
+	'SKIP'
+	'SKIP'
+	'SKIP'
+	'SKIP'
+	'SKIP'
+	'SKIP'
+	'SKIP'
+	'SKIP'
+	'SKIP'
+	'SKIP'
+	# '8e32ff6ff83cbe12a798920a010061cf9f4ec7b178362dde517b4bc71555f8a2'
+)
 # noextract=("v2020.3.tar.gz")
 md5sums=()
 validpgpkeys=()
 
 pkgver() {
-	cd "$srcdir/${pkgname%-git}"
+	src_qgc=$srcdir/${pkgname%-git}
+	cd $src_qgc
 	# Git, tags available
 	printf "%s" "$(git describe --long | sed 's/\([^-]*-\)g/r\1/;s/-/./g')"
 }
 
 
 prepare() {
-	cd $srcdir/${pkgname%-git}
-	git submodule update --init --recursive
+	src_qgc=$srcdir/${pkgname%-git}
+	cd "$srcdir/GpsDrivers"
+	git submodule init
+	rm -rf $src_qgc/GPS/Drivers
+	git config submodule.GpsDrivers.url $src_qgc/GPS/Drivers
+
+	cd $srcdir/c_library_v2
+	git submodule init
+	cd $srcdir/android_openssl
+	git submodule init
+	rm -rf ""
+	git config submodule.android_openssl.url $src_qgc/libs/OpenSSL/android_openssl
+
+	cd $srcdir/gst-plugins-good
+	git submodule init
+	# git apply "$srcdir/gst-plugins-good-volatile.patch"
+	git config submodule.gst-plugins-good.url $src_qgc/libs/qmlglsink/gst-plugins-good
+
+	cd $srcdir/xz-embedded
+	git submodule init
+	git config submodule.xz-embedded.url $src_qgc/libs/xz-embedded
+
+	cd $srcdir/libevents
+	git submodule init
+	git config submodule.libevents.url $src_qgc/libs/libevents/libevents
+
+	cd $srcdir/eigen
+	git submodule init
+	git config submodule.eigen.url $src_qgc/libs/eigen
+
+	cd $srcdir/qmdnsengine
+	git submodule init
+	git config submodule.qmdnsengine.url $src_qgc/libs/qmdnsengine
+
+	cd $srcdir/nlohmann_json_cmake_fetchcontent
+	git submodule init
+	git config submodule.nlohmann_json_cmake_fetchcontent.url $src_qgc/libs/nlohmann_json
+
+	cd $src_qgc
+	# git submodule update --init --recursive
 	# git apply $srcdir/patch
-	echo $PWD
-	patch -p1 -i "$srcdir/patch"
+
+	# echo $PWD
+	# patch -p1 -i "$srcdir/patch"
 	cmake . -B ./build \
 		-DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_INSTALL_PREFIX=/usr
